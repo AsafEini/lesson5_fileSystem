@@ -112,22 +112,48 @@ function createFileOrFolder() {
     console.log('creating file folder');
     /* todo: implement additon of file/folder to file system array   */
     var answer = prompt("create file or a folder?");
+    var exists = false;
 
     if(answer == "folder"){
 
         var folderName = prompt("what is the folder name? ");
+        for(i = 0; i < fsStorage.length; ++i){
+            if(fsStorage[i][2] == folderName && fsStorage[i][1] == currentFolder){
+                exists = true;
+            }
+        };
+
+        if(exists == false){
         console.log("created folder: "+folderName);
         var newFolder = [fsStorage.length, currentFolder, folderName]
         fsStorage.push(newFolder);
+        }
+
+        if(exists == true){
+            console.log("name already exists")
+        }
+
     }
 
     else if (answer == "file"){
         var fileName = prompt ("what is the file name?");
+        for(i = 0; i < fsStorage.length; ++i){
+            if(fsStorage[i][2] == fileName && fsStorage[i][1] == currentFolder){
+                exists = true;
+            }
+        };
+
+    if(exists == false){
         var content = prompt("write your content:")
         console.log("created file: "+fileName)
         var newFile = [fsStorage.length, currentFolder, fileName, content ]
         fsStorage.push(newFile);
     }
+    if(exists == true){
+        console.log("name is already exists")
+    }
+    }
+
      }
 
     function deleteFileOrFolder() {
@@ -183,6 +209,41 @@ function createFileOrFolder() {
 function searchInFileOrFolder() {
     console.log('searching current files folder');
     /* todo: implement search across all folders by name and content  */
+    var searchAnswer = prompt("Search for a File in the Current Directory ");
+    var targetItem;
+    var result = "path: ";
+    var itemExists = false;
+    for(i = 0; i < fsStorage.length; ++i){
+        if(fsStorage[i][2] == searchAnswer){
+            itemExists = true;
+        }
+    }
+    if(itemExists == true) {
+        for (i = 0; i < fsStorage.length; ++i) {
+            if (fsStorage[i][2] == searchAnswer) {
+                targetItem = fsStorage[i];
+            }
+        }
+
+        var names = [];
+
+        while (targetItem[0] != 0) {
+            var idParent = targetItem[1];
+            var parent = fsStorage[idParent];
+            names.push(targetItem[2]);
+            targetItem = parent;
+        }
+
+        for (i = 0; i < names.length; ++i) {
+            result += names[i] + "-->"
+        }
+        result += "root";
+
+        console.log(result)
+    }
+
+    else{console.log("file/folder does not exists")}
+
 }
 
 function quitProgram() {
