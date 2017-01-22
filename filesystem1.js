@@ -211,8 +211,9 @@ function searchInFileOrFolder() {
     /* todo: implement search across all folders by name and content  */
     var searchAnswer = prompt("Search for a File in the Current Directory ");
     var targetItem;
-    var result = "path: ";
+    var result = "path: root -->";
     var itemExists = false;
+    var names = [];
     for(i = 0; i < fsStorage.length; ++i){
         if(fsStorage[i][2] == searchAnswer){
             itemExists = true;
@@ -222,27 +223,38 @@ function searchInFileOrFolder() {
         for (i = 0; i < fsStorage.length; ++i) {
             if (fsStorage[i][2] == searchAnswer) {
                 targetItem = fsStorage[i];
+                findAllDir(targetItem);
             }
         }
 
-        var names = [];
-
-        while (targetItem[0] != 0) {
-            var idParent = targetItem[1];
-            var parent = fsStorage[idParent];
-            names.push(targetItem[2]);
-            targetItem = parent;
-        }
-
-        for (i = 0; i < names.length; ++i) {
+        for(i = names.length-1; i >= 0 ; --i){
             result += names[i] + "-->"
         }
-        result += "root";
+        result +=searchAnswer
+
 
         console.log(result)
+
+
+
+
+
+
+
     }
 
     else{console.log("file/folder does not exists")}
+
+    function findAllDir(targetItem){
+        for(i = 0; i < fsStorage.length; ++i){
+            if(fsStorage[i][0] == targetItem[1] && fsStorage[i][0] != 0){
+                names.push(fsStorage[i][2]);
+                findAllDir(fsStorage[i])
+
+            }
+
+        }
+    }
 
 }
 
